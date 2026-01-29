@@ -19,7 +19,7 @@ func TestCleanInput(t *testing.T) {
 		{
 			name:     "empty input",
 			input:    "     ",
-			expected: []string(nil),
+			expected: []string{},
 		},
 		{
 			name:     "mixed case and spaces",
