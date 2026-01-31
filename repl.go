@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/cyberis/pokedex/internal/pokeapi"
 )
 
 type cliCommand struct {
@@ -14,12 +16,12 @@ type cliCommand struct {
 }
 
 type cliConfig struct {
-	nextURL string
-	prevURL string
+	pokeapiClient pokeapi.Client
+	nextURL       *string
+	prevURL       *string
 }
 
-func repl() {
-	config := cliConfig{nextURL: "", prevURL: ""}
+func repl(cfg *cliConfig) {
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
@@ -34,7 +36,7 @@ func repl() {
 		}
 		command := words[0]
 		if cmd, exists := getCommands()[command]; exists {
-			err := cmd.callback(&config)
+			err := cmd.callback(cfg)
 			if err != nil {
 				fmt.Printf("Error executing command %q: %v\n", command, err)
 			}
@@ -66,12 +68,12 @@ func getCommands() map[string]cliCommand {
 		"map": {
 			name:        "map",
 			description: "Displays the Pokedex map",
-			callback:    commandMap,
+			callback:    commandMapf,
 		},
 		"mapb": {
 			name:        "mapb",
 			description: "Displays the previous page of the Pokedex map",
-			callback:    commandMapBack,
+			callback:    commandMapb,
 		},
 	}
 	return commands

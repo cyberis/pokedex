@@ -1,31 +1,43 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-
-	"github.com/cyberis/pokedex/internal/pokeapi"
 )
 
-func commandMap(cfg *cliConfig) error {
-	if cfg.nextURL == "nil" {
-		fmt.Println("you're on last page")
-		return nil
+func commandMapf(cfg *cliConfig) error {
+	if cfg.nextURL == nil {
+		return errors.New("you're on the last page")
 	}
-	url := cfg.nextURL
-	locationList, err := pokeapi.GetLocationAreaList(url)
+	locationList, err := cfg.pokeapiClient.GetLocationAreaList(cfg.nextURL)
 	if err != nil {
 		return err
 	}
-	if locationList.Next != nil {
-		cfg.nextURL = locationList.Next.(string)
-	} else {
-		cfg.nextURL = "nil" //Required because .Next can be null -> nil, nil is not a string but "nil" is
+
+	// Update Next and Previous URLs in the config
+	cfg.nextURL = locationList.Next
+	cfg.prevURL = locationList.Previous
+
+	// Print the location names
+	for _, location := range locationList.Results {
+		fmt.Println(location.Name)
 	}
-	if locationList.Previous != nil {
-		cfg.prevURL = locationList.Previous.(string)
-	} else {
-		cfg.prevURL = "nil"
+	return nil
+}
+
+func commandMapb(cfg *cliConfig) error {
+	if cfg.prevURL == nil {
+		return errors.New("you're on the first page")
 	}
+	locationList, err := cfg.pokeapiClient.GetLocationAreaList(cfg.prevURL)
+	if err != nil {
+		return err
+	}
+
+	// Update Next and Previous URLs in the config
+	cfg.nextURL = locationList.Next
+	cfg.prevURL = locationList.Previous
+
 	for _, location := range locationList.Results {
 		fmt.Println(location.Name)
 	}
