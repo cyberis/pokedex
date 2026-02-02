@@ -12,6 +12,17 @@ func (c *Client) GetLocationAreaList(pageURL *string) (LocationAreaList, error) 
 	if pageURL != nil && *pageURL != "" {
 		url = *pageURL
 	}
+
+	// Check cache first
+	if cachedData, found := c.cache.Get(url); found {
+		locationAreaList := LocationAreaList{}
+		if err := json.Unmarshal(cachedData, &locationAreaList); err != nil {
+			log.Printf("Error decoding cached location area list JSON: %v", err)
+			return LocationAreaList{}, err
+		}
+		return locationAreaList, nil
+	}
+
 	// Make the HTTP GET request and do many checks for errors
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -37,6 +48,9 @@ func (c *Client) GetLocationAreaList(pageURL *string) (LocationAreaList, error) 
 		log.Printf("Error decoding location area list JSON: %v", err)
 		return LocationAreaList{}, err
 	}
+
+	// Add the fetched data to the cache
+	c.cache.Add(url, dat)
 
 	return locationAreaList, nil
 }
