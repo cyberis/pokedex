@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func commandMapf(cfg *cliConfig) error {
+func commandMapf(cfg *cliConfig, params []string) error {
 	if cfg.nextURL == nil {
 		return errors.New("you're on the last page")
 	}
@@ -25,7 +25,7 @@ func commandMapf(cfg *cliConfig) error {
 	return nil
 }
 
-func commandMapb(cfg *cliConfig) error {
+func commandMapb(cfg *cliConfig, params []string) error {
 	if cfg.prevURL == nil {
 		return errors.New("you're on the first page")
 	}
