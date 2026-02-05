@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func commandExplore(cfg *cliConfig, params []string) error {
+func commandExplore(cfg *cliConfig, params ...string) error {
 	areaName := params[0]
 	pokemonNames, err := cfg.pokeapiClient.ListPokemonNamesInLocationArea(areaName)
 	if err != nil {

@@ -12,7 +12,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*cliConfig, []string) error
+	callback    func(*cliConfig, ...string) error
 }
 
 type cliConfig struct {
@@ -40,7 +40,7 @@ func repl(cfg *cliConfig) {
 			params = words[1:]
 		}
 		if cmd, exists := getCommands()[command]; exists {
-			err := cmd.callback(cfg, params)
+			err := cmd.callback(cfg, params...)
 			if err != nil {
 				fmt.Printf("Error executing command %q: %v\n", command, err)
 			}
