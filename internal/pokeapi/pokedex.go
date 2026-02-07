@@ -23,3 +23,11 @@ func (p *Pokedex) Add(name string, pokemon Pokemon) {
 
 	p.entries[name] = pokemon
 }
+
+func (p *Pokedex) Exists(name string) bool {
+	p.mux.Lock()
+	defer p.mux.Unlock()
+
+	_, exists := p.entries[name]
+	return exists
+}

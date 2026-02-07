@@ -65,3 +65,43 @@ func (c *Client) GetPokemonBaseExperience(name string) (int, error) {
 	}
 	return pokemon.BaseExperience, nil
 }
+
+func (c *Client) GetPokemonHeight(name string) (int, error) {
+	pokemon, err := c.GetPokemon(name)
+	if err != nil {
+		return 0, err
+	}
+	return pokemon.Height, nil
+}
+
+func (c *Client) GetPokemonWeight(name string) (int, error) {
+	pokemon, err := c.GetPokemon(name)
+	if err != nil {
+		return 0, err
+	}
+	return pokemon.Weight, nil
+}
+
+func (c *Client) GetPokemonStats(name string) (map[string]int, error) {
+	pokemon, err := c.GetPokemon(name)
+	if err != nil {
+		return nil, err
+	}
+	stats := make(map[string]int)
+	for _, stat := range pokemon.Stats {
+		stats[stat.Stat.Name] = stat.BaseStat
+	}
+	return stats, nil
+}
+
+func (c *Client) GetPokemonTypes(name string) ([]string, error) {
+	pokemon, err := c.GetPokemon(name)
+	if err != nil {
+		return nil, err
+	}
+	types := []string{}
+	for _, t := range pokemon.Types {
+		types = append(types, t.Type.Name)
+	}
+	return types, nil
+}
