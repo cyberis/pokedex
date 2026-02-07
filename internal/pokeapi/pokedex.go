@@ -31,3 +31,14 @@ func (p *Pokedex) Exists(name string) bool {
 	_, exists := p.entries[name]
 	return exists
 }
+
+func (p *Pokedex) ListPokedex() []string {
+	p.mux.Lock()
+	defer p.mux.Unlock()
+
+	names := make([]string, 0, len(p.entries))
+	for name := range p.entries {
+		names = append(names, name)
+	}
+	return names
+}
